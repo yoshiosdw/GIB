@@ -9,7 +9,7 @@
           <div class="sidebar-brand-icon rotate-n-15">
           <img src="img/GIB.png" style="width: 65px;">
           </div>
-          <div class="sidebar-brand-text mx-3">GIB</div>
+          <div class="sidebar-brand-text mx-3" style="font-size: 2rem;">GIB</div>
       </a>
 
 
@@ -35,7 +35,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="pendapatan.php">
           <i class="fas fa-fw fa-arrow-up"></i>
-          <span>Pendapatan</span>
+          <span style="font-size: 1.2rem;">Pendapatan</span>
         </a>
       </li>
 
@@ -43,7 +43,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="pengeluaran.php" >
           <i class="fas fa-fw fa-arrow-down"></i>
-          <span>Pengeluaran</span>
+          <span style="font-size: 1.2rem;">Pengeluaran</span>
         </a>
       </li>
 
@@ -52,14 +52,14 @@
 
       <!-- Heading -->
       <div class="sidebar-heading">
-        Karyawan
+        Pondok
       </div>
 
       <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="karyawan.php">
           <i class="fas fa-fw fa-users"></i>
-          <span>Karyawan</span>
+          <span style="font-size: 1.2rem;">Daftar Pondok</span>
         </a>
       </li>
 	  
@@ -82,7 +82,7 @@
       <li class="nav-item">
         <a class="nav-link" href="laporan.php">
           <i class="fas fa-fw fa-table"></i>
-          <span>Laporan</span></a>
+          <span style="font-size: 1.2rem;">Laporan</span></a>
       </li>
 
       <!-- Divider -->
