@@ -20,7 +20,7 @@
       <li class="nav-item active">
         <a class="nav-link" href="index.php">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Dashboard</span></a>
+          <span style="font-size: 1.2rem;">Dashboard</span></a>
       </li>
 
       <!-- Divider -->

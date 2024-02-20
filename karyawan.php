@@ -37,35 +37,76 @@ require 'cek-sesi.php';
         <!-- Begin Page Content -->
         <div class="container-fluid">
 
-<button type="button" class="btn btn-success" style="margin:5px" data-toggle="modal" data-target="#myModalTambah"><i class="fa fa-plus"> Karyawan</i></button><br>
+         <!-- Modal -->
+  <div id="myModalTambah" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- konten modal-->
+      <div class="modal-content">
+        <!-- heading modal -->
+        <div class="modal-header">
+          <h4 class="modal-title">Tambah Data Pondok</h4>
+		    <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <!-- body modal -->
+		<form action="tambah-karyawan.php" method="get">
+        <div class="modal-body">
+		Nama Pondok : 
+         <input type="text" class="form-control" name="nama_pondok">
+    Santri Ikhwan : 
+         <input type="text" class="form-control" name="santri_ikhwan">
+         Santri Akhwat : 
+         <input type="text" class="form-control" name="santri_akhwat">
+		Alamat : 
+         <input type="text" class="form-control" name="alamat">
+         Kontak : 
+         <input type="text" class="form-control" name="kontak">
+    Nama Penanggung Jawab : 
+         <input type="text" class="form-control" name="nama_penanggung_jawab">
+		
+        </div>
+        <!-- footer modal -->
+        <div class="modal-footer">
+		<button type="submit" class="btn btn-success" >Tambah</button>
+		</form>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<button type="button" class="btn btn-success" style="margin:5px" data-toggle="modal" data-target="#myModalTambah"><i class="fa fa-plus"> Pondok</i></button><br>
 
 
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Daftar Karyawan</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Daftar Pondok</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th>Nama</th>
-                      <th>Posisi</th>
+                      <th>Nama Pondok</th>
+                      <th>Santri Ikhwan</th>
+                      <th>Santri Akhwat</th>
                       <th>Alamat</th>
-                      <th>Umur</th>
                       <th>Kontak</th>
-                      <th>Aksi</th>
+                      <th>Nama Penanggung Jawab</th>
+                      <th>Edit</th>
                     </tr>
                   </thead>
                   <tfoot>
                     <tr>
-                      <th>Nama</th>
-                      <th>Posisi</th>
+                      <th>Nama Pondok</th>
+                      <th>Santri Ikhwan</th>
+                      <th>Santri Akhwat</th>
                       <th>Alamat</th>
-                      <th>Umur</th>
                       <th>Kontak</th>
-                      <th>Aksi</th>
+                      <th>Nama Penanggung Jawab</th>
+                      <th>Edit</th>
                     </tr>
                   </tfoot>
                   <tbody>
@@ -76,11 +117,12 @@ while ($data = mysqli_fetch_assoc($query))
 {
 ?>
                     <tr>
-                      <td><?=$data['nama']?></td>
-                      <td><?=$data['posisi']?></td>
+                      <td><?=$data['nama_pondok']?></td>
+                      <td><?=$data['santri_ikhwan']?></td>
+                      <td><?=$data['santri_akhwat']?></td>
                       <td><?=$data['alamat']?></td>
-                      <td><?=$data['umur']?></td>
                       <td><?=$data['kontak']?></td>
+                      <td><?=$data['nama_penanggung_jawab']?></td>
 					  <td>
                     <!-- Button untuk modal -->
 <a href="#" type="button" class=" fa fa-edit btn btn-primary btn-md" data-toggle="modal" data-target="#myModal<?php echo $data['id_karyawan']; ?>"></a>
@@ -93,7 +135,7 @@ while ($data = mysqli_fetch_assoc($query))
 <!-- Modal content-->
 <div class="modal-content">
 <div class="modal-header">
-<h4 class="modal-title">Ubah Data Karyawan</h4>
+<h4 class="modal-title">Ubah Data Pondok</h4>
 <button type="button" class="close" data-dismiss="modal">&times;</button>
 </div>
 <div class="modal-body">
@@ -110,14 +152,20 @@ while ($row = mysqli_fetch_array($query_edit)) {
 <input type="hidden" name="id_karyawan" value="<?php echo $row['id_karyawan']; ?>">
 
 <div class="form-group">
-<label>Nama</label>
-<input type="text" name="nama" class="form-control" value="<?php echo $row['nama']; ?>">      
+<label>Nama Pondok</label>
+<input type="text" name="nama_pondok" class="form-control" value="<?php echo $row['nama_pondok']; ?>">      
 </div>
 
 <div class="form-group">
-<label>Posisi</label>
-<input type="text" name="posisi" class="form-control" value="<?php echo $row['posisi']; ?>">      
+<label>Santri Ikhwan</label>
+<input type="text" name="santri_ikhwan" class="form-control" value="<?php echo $row['santri_ikhwan']; ?>">      
 </div>
+
+<div class="form-group">
+<label>Santri Akhwat</label>
+<input type="text" name="santri_akhwat" class="form-control" value="<?php echo $row['santri_akhwat']; ?>">      
+</div>
+
 
 <div class="form-group">
 <label>Alamat</label>
@@ -125,14 +173,15 @@ while ($row = mysqli_fetch_array($query_edit)) {
 </div>
 
 <div class="form-group">
-<label>Umur</label>
-<input type="text" name="umur" class="form-control" value="<?php echo $row['umur']; ?>">      
-</div>
-
-<div class="form-group">
 <label>Kontak</label>
 <input type="text" name="kontak" class="form-control" value="<?php echo $row['kontak']; ?>">      
 </div>
+
+<div class="form-group">
+<label>Nama Penanggung Jawab</label>
+<input type="text" name="nama_penanggung_jawab" class="form-control" value="<?php echo $row['nama_penanggung_jawab']; ?>">      
+</div>
+
 
 <div class="modal-footer">  
 <button type="submit" class="btn btn-success">Ubah</button>
@@ -153,41 +202,7 @@ while ($row = mysqli_fetch_array($query_edit)) {
 
 
 
- <!-- Modal -->
-  <div id="myModalTambah" class="modal fade" role="dialog">
-    <div class="modal-dialog">
 
-      <!-- konten modal-->
-      <div class="modal-content">
-        <!-- heading modal -->
-        <div class="modal-header">
-          <h4 class="modal-title">Tambah Karyawan</h4>
-		    <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <!-- body modal -->
-		<form action="tambah-karyawan.php" method="get">
-        <div class="modal-body">
-		Nama : 
-         <input type="text" class="form-control" name="nama">
-		Posisi : 
-         <input type="text" class="form-control" name="posisi">
-		Alamat : 
-         <input type="text" class="form-control" name="alamat">
-		Umur : 
-         <input type="number" class="form-control" name="umur">
-		Kontak : 
-         <input type="text" class="form-control" name="kontak">
-        </div>
-        <!-- footer modal -->
-        <div class="modal-footer">
-		<button type="submit" class="btn btn-success" >Tambah</button>
-		</form>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
 
 
 <?php               

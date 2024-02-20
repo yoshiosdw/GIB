@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `gib`
+-- Database: `gib2`
 --
 
 -- --------------------------------------------------------
@@ -59,10 +59,8 @@ CREATE TABLE `catatan` (
 --
 
 INSERT INTO `catatan` (`id_catatan`, `catatan`) VALUES
-(1, 'Besok, Hari minggu akan ada kunjungan dari pihak dinas untuk mengecek kinerja karyawan.'),
-(2, 'Hari Kamis jam 8 akan ada rapat, diharapkan kepada semua karyawan agar dapat berhadir.'),
-(3, 'Tingkatkan lagi pendapatan, dan minimalkan pengeluaran'),
-(4, 'tgl 6 domain dan hosting banyak yang akan expired, dan harus diperpanjang lagi');
+(1, 'Tanggal 17 Maret ifthor (diponpes) .'),
+(2, '24 Maret ifthor bersama adik-adik TPQ (Masjid KU).');
 
 -- --------------------------------------------------------
 
@@ -107,20 +105,20 @@ INSERT INTO `hutang` (`id_hutang`, `jumlah`, `tgl_hutang`, `alasan`, `penghutang
 
 CREATE TABLE `karyawan` (
   `id_karyawan` int(11) NOT NULL,
-  `nama` varchar(40) NOT NULL,
-  `posisi` varchar(40) NOT NULL,
+  `nama_pondok` varchar(40) NOT NULL,
+  `santri_ikhwan` int(40) NOT NULL,
+  `santri_akhwat` int(40) NOT NULL,
   `alamat` varchar(40) NOT NULL,
-  `umur` int(11) NOT NULL,
-  `kontak` varchar(40) NOT NULL
+  `kontak` varchar(40) NOT NULL,
+  `nama_penanggung_jawab` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `karyawan`
 --
 
-INSERT INTO `karyawan` (`id_karyawan`, `nama`, `posisi`, `alamat`, `umur`, `kontak`) VALUES
-(1, 'saiful', 'ketua', 'mns.aron', 19, '0888888'),
-(6, 'Riza', 'Bendahara', 'Aceh', 19, '08333333333');
+INSERT INTO `karyawan` (`id_karyawan`, `nama_pondok`, `santri_ikhwan`, `santri_akhwat`, `alamat`, `kontak`, `nama_penanggung_jawab`) VALUES
+(1, 'PONPES. Ihyaul Ulum', 30, 40, 'Banaran, Sedayu, Kec. Muntilan, Kabupaten Magelang, Jawa Tengah 56412', '08170900589', 'Ustadz ******');
 
 -- --------------------------------------------------------
 
@@ -215,16 +213,10 @@ CREATE TABLE `sumber` (
 --
 
 INSERT INTO `sumber` (`id_sumber`, `nama`) VALUES
-(1, 'Buat Web Pemerintah'),
-(2, 'Desain Poster Lomba'),
-(3, 'Instalasi Softwre'),
-(4, 'Instalasi OS'),
-(5, 'Buat Video Animasi'),
-(6, 'Domain'),
-(7, 'Hosting'),
-(8, 'Listrik'),
-(9, 'Air'),
-(10, 'Wifi');
+(1, 'DONASI ORANG TUA ASUH'),
+(2, 'KHAS'),
+(3, 'KENCLENG'),
+(4, 'OPEN DONASI');
 
 -- --------------------------------------------------------
 
