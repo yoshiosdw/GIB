@@ -7,7 +7,7 @@ $jumlah = $_GET['jumlah'];
 $sumber = $_GET['sumber'];
 
 //query update
-$query = mysqli_query($koneksi,"INSERT INTO `pengeluaran` (`tgl_pengeluaran`, `jumlah`, `id_sumber`) VALUES ('$tgl_pengeluaran', '$jumlah', '$sumber')");
+$query = mysqli_query($koneksi,"INSERT INTO `pengeluaran` (`tgl_pengeluaran`, `jumlah`, `sumber`) VALUES ('$tgl_pengeluaran', '$jumlah', '$sumber')");
 
 if ($query) {
  # credirect ke page index
