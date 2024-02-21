@@ -32,89 +32,34 @@ require ('sidebar.php');
 $karyawan = mysqli_query($koneksi, "SELECT * FROM karyawan");
 $karyawan = mysqli_num_rows($karyawan);
 
-$pengeluaran_hari_ini = mysqli_query($koneksi, "SELECT jumlah FROM pengeluaran where tgl_pengeluaran = CURDATE()");
-$pengeluaran_hari_ini = mysqli_fetch_array($pengeluaran_hari_ini);
- 
-$pemasukan_hari_ini = mysqli_query($koneksi, "SELECT nominal FROM pemasukan where tanggal = CURDATE()");
-$pemasukan_hari_ini = mysqli_fetch_array($pemasukan_hari_ini);
-
-
-
 $pemasukan=mysqli_query($koneksi,"SELECT * FROM pemasukan");
+$arraymasuk = [];
 while ($masuk=mysqli_fetch_array($pemasukan)){
-$arraymasuk[] = $masuk['nominal'];
+    $arraymasuk[] = $masuk['nominal'];
 }
 $jumlahmasuk = array_sum($arraymasuk);
 
-
 $pengeluaran=mysqli_query($koneksi,"SELECT * FROM pengeluaran");
+$arraykeluar = [];
 while ($keluar=mysqli_fetch_array($pengeluaran)){
-$arraykeluar[] = $keluar['jumlah'];
+    $arraykeluar[] = $keluar['jumlah'];
 }
 $jumlahkeluar = array_sum($arraykeluar);
 
-
 $uang = $jumlahmasuk - $jumlahkeluar;
 
-//untuk data chart area
+$pendapatan_per_bulan = mysqli_query($koneksi, "SELECT MONTH(tanggal) AS bulan, SUM(nominal) AS total_pendapatan FROM pemasukan GROUP BY MONTH(tanggal)");
 
+$dataPendapatanPerBulan = [];
+$labelBulan = [];
 
+while ($row = mysqli_fetch_assoc($pendapatan_per_bulan)) {
+    $dataPendapatanPerBulan[] = $row['total_pendapatan'];
+    $labelBulan[] = DateTime::createFromFormat('!m', $row['bulan'])->format('F'); // Format bulan menjadi nama bulan
+}
 
-$sekarang =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
-WHERE tanggal = CURDATE()");
-$sekarang = mysqli_fetch_array($sekarang);
-
-$satuhari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
-WHERE tanggal = CURDATE() - INTERVAL 1 DAY");
-$satuhari= mysqli_fetch_array($satuhari);
-
-
-$duahari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
-WHERE tanggal = CURDATE() - INTERVAL 2 DAY");
-$duahari= mysqli_fetch_array($duahari);
-
-$tigahari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
-WHERE tanggal = CURDATE() - INTERVAL 3 DAY");
-$tigahari= mysqli_fetch_array($tigahari);
-
-$empathari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
-WHERE tanggal = CURDATE() - INTERVAL 4 DAY");
-$empathari= mysqli_fetch_array($empathari);
-
-$limahari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
-WHERE tanggal = CURDATE() - INTERVAL 5 DAY");
-$limahari= mysqli_fetch_array($limahari);
-
-$enamhari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
-WHERE tanggal = CURDATE() - INTERVAL 6 DAY");
-$enamhari= mysqli_fetch_array($enamhari);
-
-$tujuhhari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
-WHERE tanggal = CURDATE() - INTERVAL 7 DAY");
-$tujuhhari= mysqli_fetch_array($tujuhhari);
-
-$sekarang = $uang;
-$satuhari = $duahari = $tigahari = $empathari = $limahari = $enamhari = $tujuhhari = 0;
-
-if ($tujuhhari !== null && isset($tujuhhari['0'])) $tujuhhari = $uang - ($jumlahmasuk - $jumlahkeluar) + $tujuhhari['0'];
-if ($enamhari !== null && isset($enamhari['0'])) $enamhari = $uang - ($jumlahmasuk - $jumlahkeluar) + $enamhari['0'];
-if ($limahari !== null && isset($limahari['0'])) $limahari = $uang - ($jumlahmasuk - $jumlahkeluar) + $limahari['0'];
-if ($empathari !== null && isset($empathari['0'])) $empathari = $uang - ($jumlahmasuk - $jumlahkeluar) + $empathari['0'];
-if ($tigahari !== null && isset($tigahari['0'])) $tigahari = $uang - ($jumlahmasuk - $jumlahkeluar) + $tigahari['0'];
-if ($duahari !== null && isset($duahari['0'])) $duahari = $uang - ($jumlahmasuk - $jumlahkeluar) + $duahari['0'];
-if ($satuhari !== null && isset($satuhari['0'])) $satuhari = $uang - ($jumlahmasuk - $jumlahkeluar) + $satuhari['0'];
-  
-$dataChart = json_encode([
-  $sekarang,
-  $satuhari,
-  $duahari,
-  $tigahari,
-  $empathari,
-  $limahari,
-  $enamhari,
-  $tujuhhari
-]);
-
+$dataPendapatanPerBulan = json_encode($dataPendapatanPerBulan);
+$labelBulan = json_encode($labelBulan);
 
 ?>
       <!-- Main Content -->
@@ -149,62 +94,43 @@ $dataChart = json_encode([
           <div class="row">
 
             <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Pendapatan (Hari Ini)</div>
-                          <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            <?php
-                            // Memeriksa apakah $pemasukan_hari_ini tidak null dan indeks '0' ada
-                            if ($pemasukan_hari_ini !== null && isset($pemasukan_hari_ini['0'])) {
-                                echo 'Rp.' . number_format($pemasukan_hari_ini['0'], 2, ',', '.');
-                            } else {
-                                echo 'Rp.0,00'; // Jika $pemasukan_hari_ini null atau indeks '0' tidak ada
-                            }
-                            ?>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-calendar fa-2x text-gray-300"></i>
+          <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+              <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                  <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Pendapatan (per Bulan)</div> <!-- Ubah judul di sini -->
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                      Rp. <?= number_format($jumlahmasuk, 2, ',', '.') ?>
                     </div>
                   </div>
-                </div> &nbsp TOTAL : Rp. 
-				<?php
-				echo number_format($jumlahmasuk,2,',','.');
-				?>
-			</div>
-            </div>
-
-            <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Pengeluaran (Hari Ini)</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        <?php
-                        // Memeriksa apakah $pengeluaran_hari_ini tidak null dan indeks '0' ada
-                        if ($pengeluaran_hari_ini !== null && isset($pengeluaran_hari_ini['0'])) {
-                            echo 'Rp.' . number_format($pengeluaran_hari_ini['0'], 2, ',', '.');
-                        } else {
-                            echo 'Rp.0,00'; // Jika $pengeluaran_hari_ini null atau indeks '0' tidak ada
-                        }
-                        ?>
-                    </div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                    </div>
+                  <div class="col-auto">
+                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
                   </div>
-                </div> &nbsp TOTAL : Rp. 
-				<?php
-				echo number_format($jumlahkeluar,2,',','.');
-				?>
+                </div>
               </div>
             </div>
+          </div>
+
+          <!-- Earnings (Monthly) Card Example -->
+          <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+              <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                  <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Pengeluaran (per Bulan)</div> <!-- Ubah judul di sini -->
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                      Rp. <?= number_format($jumlahkeluar, 2, ',', '.') ?>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
 
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
@@ -215,7 +141,7 @@ $dataChart = json_encode([
                       <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Sisa Uang</div>
                       <div class="row no-gutters align-items-center">
                         <div class="col-auto">
-                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">Rp.<?=number_format($uang,2,',','.');?></div>
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">Rp.<?= number_format($uang, 2, ',', '.') ?></div>
                         </div>   
                       </div>
                     </div>
@@ -223,28 +149,7 @@ $dataChart = json_encode([
                       <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
                     </div>
                   </div>
-
-                </div><div class="col">
-                          <div class="progress progress-sm mr-2">
-						  <?php
-						  if ($uang < 1 ){
-							  $warna = 'danger';
-							  $value = 0;
-						  }
-						  else if ($uang >= 1 && $uang < 1000000){
-						  $warna = 'warning';
-						  $value = 1;
-						  }
-						  else{
-							  $warna = 'info';
-							  $value = $uang / 10000;
-						  };
-						  
-						  ?>
-						  
-                            <div class="progress-bar bg-<?=$warna?>" role="progressbar" style="width: 100%" aria-valuenow="<?=$value?>" aria-valuemin="0" aria-valuemax="100"><span><?=$value?> % </span></div>
-                          </div>
-                        </div>
+                </div>
               </div>
             </div>
 
@@ -273,30 +178,18 @@ $dataChart = json_encode([
             <!-- Area Chart -->
             <div class="col-xl-8 col-lg-7">
               <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Pendapatan Minggu Ini</h6>
-                  <!-- <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Dropdown Header:</div>
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                  </div> -->
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div class="chart-area">
-                    <canvas id="myAreaChart"></canvas>
+                  <!-- Card Header - Dropdown -->
+                  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                      <h6 class="m-0 font-weight-bold text-primary">Pendapatan Per Bulan</h6>
                   </div>
-                </div>
+                  <!-- Card Body -->
+                  <div class="card-body">
+                      <div class="chart-area">
+                          <canvas id="myMonthlyIncomeChart"></canvas>
+                      </div>
+                  </div>
               </div>
-            </div>
+          </div>
 
             <!-- Pie Chart -->
             <div class="col-xl-4 col-lg-5">
@@ -304,18 +197,6 @@ $dataChart = json_encode([
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Perbandingan</h6>
-                  <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Dropdown Header:</div>
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                  </div>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -376,128 +257,86 @@ $dataChart = json_encode([
 
   <!-- Page level custom scripts -->
   <script type="text/javascript">
-  // Set new default font family and font color to mimic Bootstrap's default styling
-Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#858796';
-
-function number_format(number, decimals, dec_point, thousands_sep) {
-  // *     example: number_format(1234.56, 2, ',', ' ');
-  // *     return: '1 234,56'
-  number = (number + '').replace(',', '').replace(' ', '');
-  var n = !isFinite(+number) ? 0 : +number,
-    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-    s = '',
-    toFixedFix = function(n, prec) {
-      var k = Math.pow(10, prec);
-      return '' + Math.round(n * k) / k;
-    };
-  // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-  s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-  if (s[0].length > 3) {
-    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-  }
-  if ((s[1] || '').length < prec) {
-    s[1] = s[1] || '';
-    s[1] += new Array(prec - s[1].length + 1).join('0');
-  }
-  return s.join(dec);
-}
-
-// Area Chart Example
-var ctx = document.getElementById("myAreaChart");
-var myLineChart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: ["7 hari lalu","6 hari lalu", "5 hari lalu", "4 hari lalu", "3 hari lalu", "2 hari lalu", "1 hari lalu"],
-    datasets: [{
-      label: "Pendapatan",
-      lineTension: 0.3,
-      backgroundColor: "rgba(78, 115, 223, 0.05)",
-      borderColor: "rgba(78, 115, 223, 1)",
-      pointRadius: 3,
-      pointBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointBorderColor: "rgba(78, 115, 223, 1)",
-      pointHoverRadius: 3,
-      pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-      pointHitRadius: 10,
-      pointBorderWidth: 2,
-      data: <?php echo $dataChart; ?>,
-    }]
-
-  },
-  options: {
-    maintainAspectRatio: false,
-    layout: {
-      padding: {
-        left: 10,
-        right: 25,
-        top: 25,
-        bottom: 0
-      }
-    },
-    scales: {
-      xAxes: [{
-        time: {
-          unit: 'date'
+    var ctx = document.getElementById("myMonthlyIncomeChart");
+    var myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: <?php echo $labelBulan; ?>,
+            datasets: [{
+                label: "Pendapatan",
+                backgroundColor: "#4e73df",
+                hoverBackgroundColor: "#2e59d9",
+                borderColor: "#4e73df",
+                data: <?php echo $dataPendapatanPerBulan; ?>,
+            }],
         },
-        gridLines: {
-          display: false,
-          drawBorder: false
-        },
-        ticks: {
-          maxTicksLimit: 7
+        options: {
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
+            },
+            scales: {
+                xAxes: [{
+                    time: {
+                        unit: 'month'
+                    },
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 12 // Maksimum 12 bulan
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        maxTicksLimit: 5,
+                        padding: 10,
+                        callback: function(value, index, values) {
+                            return 'Rp.' + number_format(value);
+                        }
+                    },
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    }
+                }],
+            },
+            legend: {
+                display: false
+            },
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, chart) {
+                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                        return datasetLabel + ': Rp.' + number_format(tooltipItem.yLabel);
+                    }
+                }
+            }
         }
-      }],
-      yAxes: [{
-        ticks: {
-          maxTicksLimit: 5,
-          padding: 10,
-          // Include a dollar sign in the ticks
-          callback: function(value, index, values) {
-            return 'Rp.' + number_format(value);
-          }
-        },
-        gridLines: {
-          color: "rgb(234, 236, 244)",
-          zeroLineColor: "rgb(234, 236, 244)",
-          drawBorder: false,
-          borderDash: [2],
-          zeroLineBorderDash: [2]
-        }
-      }],
-    },
-    legend: {
-      display: false
-    },
-    tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      titleMarginBottom: 10,
-      titleFontColor: '#6e707e',
-      titleFontSize: 14,
-      borderColor: '#dddfeb',
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      intersect: false,
-      mode: 'index',
-      caretPadding: 10,
-      callbacks: {
-        label: function(tooltipItem, chart) {
-          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + ': Rp.' + number_format(tooltipItem.yLabel);
-        }
-      }
-    }
-  }
-});
+    });
+</script>
 
-  
-  </script>
   
   <script type="text/javascript">
   

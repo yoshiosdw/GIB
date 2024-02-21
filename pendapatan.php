@@ -148,24 +148,6 @@ require 'sidebar.php'; ?>
               <h6 class="m-0 font-weight-bold text-primary">Transaksi Masuk</h6>
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-between mb-3">
-                    <!-- Fitur pencarian -->
-                    <div class="search-container">
-                        <input type="text" id="myInput" placeholder="Search...">
-                        <button type="button" class="btn btn-primary">Search</button>
-                    </div>
-                    <!-- Tombol navigasi halaman -->
-                    <div>
-                        <button type="button" class="btn btn-primary">Previous</button>
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <!-- Isi tabel -->
-                    </table>
-                </div>
-            </div>
-            <div class="card-body">
               <div class="table-responsive">
                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
@@ -214,100 +196,94 @@ while ($data = mysqli_fetch_assoc($query))
 
 <!-- Modal content-->
 <div class="modal-content">
-<div class="modal-header">
-<h4 class="modal-title">Ubah Data Pemasukan</h4>
-<button type="button" class="close" data-dismiss="modal">&times;</button>
-</div>
-<div class="modal-body">
-<form role="form" action="proses-edit-pemasukan.php" method="get">
+    <div class="modal-header">
+        <h4 class="modal-title">Ubah Data Pemasukan</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+    <div class="modal-body">
+        <form role="form" action="proses-edit-pemasukan.php" method="get">
+            <?php
+            $id = $data['id_pemasukan']; 
+            $query_edit = mysqli_query($koneksi,"SELECT * FROM pemasukan WHERE id_pemasukan='$id'");
+            while ($row = mysqli_fetch_array($query_edit)) {  
+            ?>
 
-<?php
-$id = $data['id_pemasukan']; 
-$query_edit = mysqli_query($koneksi,"SELECT * FROM pemasukan WHERE id_pemasukan='$id'");
-//$result = mysqli_query($conn, $query);
-while ($row = mysqli_fetch_array($query_edit)) {  
-?>
+            <input type="hidden" name="id_pemasukan" value="<?php echo $row['id_pemasukan']; ?>">
 
+            <div class="form-group">
+                <label>Id</label>
+                <input type="text" name="id_pemasukan" class="form-control" value="<?php echo $row['id_pemasukan']; ?>" disabled>      
+            </div>
 
-<input type="hidden" name="id_pemasukan" value="<?php echo $row['id_pemasukan']; ?>">
+            <div class="form-group">
+                <label>Nama</label>
+                <input type="text" name="nama" class="form-control" value="<?php echo $row['nama']; ?>"> <!-- Hapus atribut disabled -->     
+            </div>
 
-<div class="form-group">
-<label>Id</label>
-<input type="text" name="id_pemasukan" class="form-control" value="<?php echo $row['id_pemasukan']; ?>" disabled>      
-</div>
+            <div class="form-group">
+                <label>No Telp</label>
+                <input type="text" name="no_telp" class="form-control" value="<?php echo $row['no_telp']; ?>" required>      
+            </div>
 
-<div class="form-group">
-<label>Nama</label>
-<input type="text" name="nama" class="form-control" value="<?php echo $row['nama']; ?>" required>      
-</div>
+            <div class="form-group">
+                <label>Nominal</label>
+                <input type="text" name="nominal" class="form-control" value="<?php echo $row['nominal']; ?>" required>      
+            </div>
 
-<div class="form-group">
-<label>No Telp</label>
-<input type="text" name="no_telp" class="form-control" value="<?php echo $row['no_telp']; ?>" required>      
-</div>
+            <div class="form-group">
+                <label>Sumber</label>
+                <input type="text" name="sumber" class="form-control" value="<?php echo $row['sumber']; ?>"> <!-- Hapus atribut disabled -->      
+            </div>
 
-<div class="form-group">
-<label>Nominal</label>
-<input type="text" name="nominal" class="form-control" value="<?php echo $row['nominal']; ?>" required>      
-</div>
+      <div class="form-group">
+      <label>Keterangan</label>
 
-<div class="form-group">
-<label>Sumber</label>
-<input type="text" name="sumber" class="form-control" value="<?php echo $row['sumber']; ?>" required>      
-</div>
+          <?php
+              if ($row['id_keterangan'] == 1){
+                $querynama1 = mysqli_query($koneksi, "SELECT jenis FROM keterangan where id_keterangan=1");
+                $querynama1 = mysqli_fetch_array($querynama1);
+              } else if ($row['id_keterangan'] == 2){
+                $querynama2 = mysqli_query($koneksi, "SELECT jenis FROM keterangan where id_keterangan=2");
+                $querynama2 = mysqli_fetch_array($querynama2);
+              } else if ($row['id_keterangan'] == 3){
+                $querynama3 = mysqli_query($koneksi, "SELECT jenis FROM keterangan where id_keterangan=3");
+                $querynama3 = mysqli_fetch_array($querynama3);
+              }
+          ?>
 
-<div class="form-group">
-<label>Keterangan</label>
+            <select class="form-control" name='id_keterangan'>
+              <?php 
+              $queri = mysqli_query($koneksi, "SELECT * FROM keterangan");
+                $no = 1;
+                $noo = 1;
+              while($querynama = mysqli_fetch_array($queri)){
 
-<?php
-if ($row['id_keterangan'] == 1){
-  $querynama1 = mysqli_query($koneksi, "SELECT jenis FROM keterangan where id_keterangan=1");
-  $querynama1 = mysqli_fetch_array($querynama1);
-} else if ($row['id_keterangan'] == 2){
-  $querynama2 = mysqli_query($koneksi, "SELECT jenis FROM keterangan where id_keterangan=2");
-  $querynama2 = mysqli_fetch_array($querynama2);
-} else if ($row['id_keterangan'] == 3){
-  $querynama3 = mysqli_query($koneksi, "SELECT jenis FROM keterangan where id_keterangan=3");
-  $querynama3 = mysqli_fetch_array($querynama3);
-}
-?>
-
-<select class="form-control" name='id_keterangan'>
-<?php 
-$queri = mysqli_query($koneksi, "SELECT * FROM keterangan");
-  $no = 1;
-  $noo = 1;
-while($querynama = mysqli_fetch_array($queri)){
-
-echo '<option value="'.$no++.'">'.$noo++.'.'.$querynama["jenis"].'</option>';
-}
-?>
-</select>     
+              echo '<option value="'.$no++.'">'.$noo++.'.'.$querynama["jenis"].'</option>';
+              }
+              ?>
+            </select>     
 
 
-<div class="form-group">
-<label>Tanggal</label>
-<input type="date" name="tanggal" class="form-control" value="<?php echo $row['tanggal']; ?>" required>      
-</div>
+      <div class="form-group">
+      <label>Tanggal</label>
+      <input type="date" name="tanggal" class="form-control" value="<?php echo $row['tanggal']; ?>" required>      
+      </div>
 
 
+      </div>
 
-
-
-</div>
-
-<div class="modal-footer">  
-<button type="submit" class="btn btn-success">Ubah</button>
-<a href="hapus-pemasukan.php?id_pemasukan=<?=$row['id_pemasukan'];?>" Onclick="confirm('Anda Yakin Ingin Menghapus?')" class="btn btn-danger">Hapus</a>
-<button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
-</div>
-<?php 
-}
-//mysql_close($host);
-?>  
-       
-</form>
-</div>
+      <div class="modal-footer">  
+      <button type="submit" class="btn btn-success">Ubah</button>
+      <a href="hapus-pemasukan.php?id_pemasukan=<?=$row['id_pemasukan'];?>" Onclick="confirm('Anda Yakin Ingin Menghapus?')" class="btn btn-danger">Hapus</a>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
+      </div>
+      <?php 
+      }
+      //mysql_close($host);
+      ?>  
+            
+      </form>
+  </div>
 </div>
 
 </div>
