@@ -2,12 +2,15 @@
 //include('dbconnected.php');
 include('koneksi.php');
 
-$tgl_pemasukan = $_GET['tgl_pemasukan'];
-$jumlah = $_GET['jumlah'];
+$nama = $_GET['nama'];
+$no_telp = $_GET['no_telp'];
+$nominal = $_GET['nominal'];
 $sumber = $_GET['sumber'];
+$id_keterangan = $_GET['id_keterangan'];
+$tanggal = $_GET['tanggal'];
 
 //query update
-$query = mysqli_query($koneksi,"INSERT INTO `pemasukan` (`tgl_pemasukan`, `jumlah`, `id_sumber`) VALUES ('$tgl_pemasukan', '$jumlah', '$sumber')");
+$query = mysqli_query($koneksi,"INSERT INTO `pemasukan` (`nama`, `no_telp`, `nominal`, `sumber`, `id_keterangan`, `tanggal`) VALUES ('$nama', '$no_telp', '$nominal', '$sumber', '$id_keterangan', '$tanggal')");
 
 if ($query) {
  # credirect ke page index

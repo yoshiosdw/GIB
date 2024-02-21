@@ -35,14 +35,14 @@ $karyawan = mysqli_num_rows($karyawan);
 $pengeluaran_hari_ini = mysqli_query($koneksi, "SELECT jumlah FROM pengeluaran where tgl_pengeluaran = CURDATE()");
 $pengeluaran_hari_ini = mysqli_fetch_array($pengeluaran_hari_ini);
  
-$pemasukan_hari_ini = mysqli_query($koneksi, "SELECT jumlah FROM pemasukan where tgl_pemasukan = CURDATE()");
+$pemasukan_hari_ini = mysqli_query($koneksi, "SELECT nominal FROM pemasukan where tanggal = CURDATE()");
 $pemasukan_hari_ini = mysqli_fetch_array($pemasukan_hari_ini);
 
 
 
 $pemasukan=mysqli_query($koneksi,"SELECT * FROM pemasukan");
 while ($masuk=mysqli_fetch_array($pemasukan)){
-$arraymasuk[] = $masuk['jumlah'];
+$arraymasuk[] = $masuk['nominal'];
 }
 $jumlahmasuk = array_sum($arraymasuk);
 
@@ -60,38 +60,62 @@ $uang = $jumlahmasuk - $jumlahkeluar;
 
 
 
-$sekarang =mysqli_query($koneksi, "SELECT jumlah FROM pemasukan
-WHERE tgl_pemasukan = CURDATE()");
+$sekarang =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
+WHERE tanggal = CURDATE()");
 $sekarang = mysqli_fetch_array($sekarang);
 
-$satuhari =mysqli_query($koneksi, "SELECT jumlah FROM pemasukan
-WHERE tgl_pemasukan = CURDATE() - INTERVAL 1 DAY");
+$satuhari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
+WHERE tanggal = CURDATE() - INTERVAL 1 DAY");
 $satuhari= mysqli_fetch_array($satuhari);
 
 
-$duahari =mysqli_query($koneksi, "SELECT jumlah FROM pemasukan
-WHERE tgl_pemasukan = CURDATE() - INTERVAL 2 DAY");
+$duahari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
+WHERE tanggal = CURDATE() - INTERVAL 2 DAY");
 $duahari= mysqli_fetch_array($duahari);
 
-$tigahari =mysqli_query($koneksi, "SELECT jumlah FROM pemasukan
-WHERE tgl_pemasukan = CURDATE() - INTERVAL 3 DAY");
+$tigahari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
+WHERE tanggal = CURDATE() - INTERVAL 3 DAY");
 $tigahari= mysqli_fetch_array($tigahari);
 
-$empathari =mysqli_query($koneksi, "SELECT jumlah FROM pemasukan
-WHERE tgl_pemasukan = CURDATE() - INTERVAL 4 DAY");
+$empathari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
+WHERE tanggal = CURDATE() - INTERVAL 4 DAY");
 $empathari= mysqli_fetch_array($empathari);
 
-$limahari =mysqli_query($koneksi, "SELECT jumlah FROM pemasukan
-WHERE tgl_pemasukan = CURDATE() - INTERVAL 5 DAY");
+$limahari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
+WHERE tanggal = CURDATE() - INTERVAL 5 DAY");
 $limahari= mysqli_fetch_array($limahari);
 
-$enamhari =mysqli_query($koneksi, "SELECT jumlah FROM pemasukan
-WHERE tgl_pemasukan = CURDATE() - INTERVAL 6 DAY");
+$enamhari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
+WHERE tanggal = CURDATE() - INTERVAL 6 DAY");
 $enamhari= mysqli_fetch_array($enamhari);
 
-$tujuhhari =mysqli_query($koneksi, "SELECT jumlah FROM pemasukan
-WHERE tgl_pemasukan = CURDATE() - INTERVAL 7 DAY");
+$tujuhhari =mysqli_query($koneksi, "SELECT nominal FROM pemasukan
+WHERE tanggal = CURDATE() - INTERVAL 7 DAY");
 $tujuhhari= mysqli_fetch_array($tujuhhari);
+
+$sekarang = $uang;
+$satuhari = $duahari = $tigahari = $empathari = $limahari = $enamhari = $tujuhhari = 0;
+
+if ($tujuhhari !== null && isset($tujuhhari['0'])) $tujuhhari = $uang - ($jumlahmasuk - $jumlahkeluar) + $tujuhhari['0'];
+if ($enamhari !== null && isset($enamhari['0'])) $enamhari = $uang - ($jumlahmasuk - $jumlahkeluar) + $enamhari['0'];
+if ($limahari !== null && isset($limahari['0'])) $limahari = $uang - ($jumlahmasuk - $jumlahkeluar) + $limahari['0'];
+if ($empathari !== null && isset($empathari['0'])) $empathari = $uang - ($jumlahmasuk - $jumlahkeluar) + $empathari['0'];
+if ($tigahari !== null && isset($tigahari['0'])) $tigahari = $uang - ($jumlahmasuk - $jumlahkeluar) + $tigahari['0'];
+if ($duahari !== null && isset($duahari['0'])) $duahari = $uang - ($jumlahmasuk - $jumlahkeluar) + $duahari['0'];
+if ($satuhari !== null && isset($satuhari['0'])) $satuhari = $uang - ($jumlahmasuk - $jumlahkeluar) + $satuhari['0'];
+  
+$dataChart = json_encode([
+  $sekarang,
+  $satuhari,
+  $duahari,
+  $tigahari,
+  $empathari,
+  $limahari,
+  $enamhari,
+  $tujuhhari
+]);
+
+
 ?>
       <!-- Main Content -->
       <div id="content">
@@ -146,7 +170,7 @@ $tujuhhari= mysqli_fetch_array($tujuhhari);
                       <i class="fas fa-calendar fa-2x text-gray-300"></i>
                     </div>
                   </div>
-                </div> &nbsp Mingguan : Rp. 
+                </div> &nbsp TOTAL : Rp. 
 				<?php
 				echo number_format($jumlahmasuk,2,',','.');
 				?>
@@ -175,7 +199,7 @@ $tujuhhari= mysqli_fetch_array($tujuhhari);
                       <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
                     </div>
                   </div>
-                </div> &nbsp Mingguan : Rp. 
+                </div> &nbsp TOTAL : Rp. 
 				<?php
 				echo number_format($jumlahkeluar,2,',','.');
 				?>
@@ -230,7 +254,7 @@ $tujuhhari= mysqli_fetch_array($tujuhhari);
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Karyawan</div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Pondok</div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$karyawan?></div>
                     </div>
                     <div class="col-auto">
@@ -252,7 +276,7 @@ $tujuhhari= mysqli_fetch_array($tujuhhari);
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Pendapatan Minggu Ini</h6>
-                  <div class="dropdown no-arrow">
+                  <!-- <div class="dropdown no-arrow">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                     </a>
@@ -263,7 +287,7 @@ $tujuhhari= mysqli_fetch_array($tujuhhari);
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" href="#">Something else here</a>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -400,8 +424,9 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [<?php echo $tujuhhari['0']?>, <?php echo $enamhari['0'] ?>, <?php echo $limahari['0'] ?>, <?php echo $empathari['0'] ?>, <?php echo $tigahari['0'] ?>, <?php echo $duahari['0'] ?>, <?php echo $satuhari['0'] ?>],
-    }],
+      data: <?php echo $dataChart; ?>,
+    }]
+
   },
   options: {
     maintainAspectRatio: false,

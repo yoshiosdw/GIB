@@ -46,19 +46,26 @@ require 'sidebar.php'; ?>
         <!-- body modal -->
     <form action="tambah-pendapatan.php" method="get">
         <div class="modal-body">
-    Tanggal : 
-         <input type="date" class="form-control" name="tgl_pemasukan" required>
-    Jumlah : 
-         <input type="number" class="form-control" name="jumlah">
-    Sumber : 
-         <select class="form-control" name="sumber">
-     <?php
-    $query_sumber = mysqli_query($koneksi, "SELECT * FROM sumber");
-    while ($row_sumber = mysqli_fetch_assoc($query_sumber)) {
-      echo '<option value="'.$row_sumber['id_sumber'].'">'.$row_sumber['nama'].'</option>';
-    }
-    ?>
-     </select>
+          Nama : 
+         <input type="text" class="form-control" name="nama" required>
+         No. Telp : 
+         <input type="text" class="form-control" name="no_telp" required>
+         Nominal : 
+         <input type="text" class="form-control" name="nominal" required>
+         Sumber : 
+         <input type="text" class="form-control" name="sumber" required>
+                    Keterangan : 
+                    <select class="form-control" name="id_keterangan">
+                        <?php
+                        $query_keterangan = mysqli_query($koneksi, "SELECT * FROM keterangan");
+                        while ($row_keterangan = mysqli_fetch_assoc($query_keterangan)) {
+                            echo '<option value="'.$row_keterangan['id_keterangan'].'">'.$row_keterangan['jenis'].'</option>';
+                        }
+                        ?>
+                    </select>
+         Tanggal : 
+         <input type="date" class="form-control" name="tanggal" required>
+         
         </div>
         <!-- footer modal -->
         <div class="modal-footer">
@@ -81,69 +88,59 @@ require 'sidebar.php'; ?>
 
               <!-- Project Card Example -->
               <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Sumber Pendapatan</h6>
-                </div>
-                <div class="card-body">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Sumber Pendapatan</h6>
+    </div>
+    <div class="card-body">
         <?php
-        $query_sumber = mysqli_query($koneksi, "SELECT * FROM sumber");
+        $query_sumber = mysqli_query($koneksi, "SELECT * FROM keterangan");
         while ($row_sumber = mysqli_fetch_assoc($query_sumber)) {
-          $id_sumber = $row_sumber['id_sumber'];
-          $nama_sumber = $row_sumber['nama'];
-          $query_jumlah = mysqli_query($koneksi, "SELECT SUM(jumlah) AS total_jumlah FROM pemasukan WHERE id_sumber = '$id_sumber'");
-          $total_jumlah = mysqli_fetch_assoc($query_jumlah)['total_jumlah'];
-          $query_count = mysqli_query($koneksi, "SELECT COUNT(*) AS total_transaksi FROM pemasukan WHERE id_sumber = '$id_sumber'");
-          $total_transaksi = mysqli_fetch_assoc($query_count)['total_transaksi'];
-          $progress_width = $total_transaksi * 10;
-          echo '
-                  <h4 class="small font-weight-bold">'.$nama_sumber.'<span class="float-right">Rp. '.number_format($total_jumlah, 2, ',', '.').'</span></h4>
-                  <div class="progress mb-4">
+            $id_keterangan = $row_sumber['id_keterangan'];
+            $nama_sumber = $row_sumber['jenis'];
+            $query_jumlah = mysqli_query($koneksi, "SELECT SUM(nominal) AS total_jumlah FROM pemasukan WHERE id_keterangan = '$id_keterangan'");
+            // Periksa apakah query berhasil dieksekusi
+            if ($query_jumlah) {
+                $total_jumlah_row = mysqli_fetch_assoc($query_jumlah);
+                // Pastikan total_jumlah tidak null sebelum mengaksesnya
+                $total_jumlah = isset($total_jumlah_row['total_jumlah']) ? $total_jumlah_row['total_jumlah'] : 0;
+            } else {
+                $total_jumlah = 0;
+            }
+            $query_count = mysqli_query($koneksi, "SELECT COUNT(*) AS total_transaksi FROM pemasukan WHERE id_keterangan = '$id_keterangan'");
+            // Periksa apakah query berhasil dieksekusi
+            if ($query_count) {
+                $total_transaksi_row = mysqli_fetch_assoc($query_count);
+                // Pastikan total_transaksi tidak null sebelum mengaksesnya
+                $total_transaksi = isset($total_transaksi_row['total_transaksi']) ? $total_transaksi_row['total_transaksi'] : 0;
+            } else {
+                $total_transaksi = 0;
+            }
+            $progress_width = $total_transaksi * 10;
+            echo '
+                <h4 class="small font-weight-bold">'.$nama_sumber.'<span class="float-right">Rp. '.number_format($total_jumlah, 2, ',', '.').'</span></h4>
+                <div class="progress mb-4">
                     <div class="progress-bar bg-info" role="progressbar" style="width:'.$progress_width.'%" aria-valuenow="'.$progress_width.'" aria-valuemin="0" aria-valuemax="100">'.$total_transaksi.' Kali</div>
-                  </div>';
+                </div>';
         }
         ?>
-                </div>
-              </div>
+    </div>
+</div>
+
         </div>
         
         
         <div class="col-lg-6">
                       <!-- Collapsable Card Example -->
-              <div class="card shadow mb-4">
-                <!-- Card Header - Accordion -->
-                <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                  <h6 class="m-0 font-weight-bold text-primary">Catatan 1</h6>
-                </a>
-                <!-- Card Content - Collapse -->
-                <div class="collapse show" id="collapseCardExample">
-                  <div class="card-body">
-          <?php $catatan1 = mysqli_query($koneksi, "SELECT catatan FROM catatan where id_catatan= 1");
-                  $catatan1 = mysqli_fetch_array($catatan1);
-          echo $catatan1['catatan'];
-          ?>
-          </div>
-                </div>
+              
               </div>
-                      <div class="card shadow mb-4">
-                <!-- Card Header - Accordion -->
-                <a href="#collapseCardExample1" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample1">
-                  <h6 class="m-0 font-weight-bold text-primary">Catatan 2</h6>
-                </a>
-                <!-- Card Content - Collapse -->
-                <div class="collapse show" id="collapseCardExample1">
-                  <div class="card-body">
-                  <?php $catatan2 = mysqli_query($koneksi, "SELECT * FROM catatan where id_catatan= 2");
-                  $catatan2 = mysqli_fetch_array($catatan2);
-          echo $catatan2['catatan'];
-          ?></div>
-                </div>
-              </div>
+                    
           </div>
           
           
           
                    <!-- DataTales Example -->
-             <div class="col-xl-8 col-lg-7">
+                   <div class="row">
+  <div class="col">
              <button type="button" class="btn btn-success" style="margin:5px" data-toggle="modal" data-target="#myModalTambah"><i class="fa fa-plus"> Pemasukan</i></button><br>
 
           <div class="card shadow mb-4">
@@ -151,26 +148,38 @@ require 'sidebar.php'; ?>
               <h6 class="m-0 font-weight-bold text-primary">Transaksi Masuk</h6>
             </div>
             <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <!-- Fitur pencarian -->
+                    <div class="search-container">
+                        <input type="text" id="myInput" placeholder="Search...">
+                        <button type="button" class="btn btn-primary">Search</button>
+                    </div>
+                    <!-- Tombol navigasi halaman -->
+                    <div>
+                        <button type="button" class="btn btn-primary">Previous</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <!-- Isi tabel -->
+                    </table>
+                </div>
+            </div>
+            <div class="card-body">
               <div class="table-responsive">
                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
                       <th>ID Pemasukan</th>
-                      <th>Tanggal</th>
-                      <th>Jumlah</th>
+                      <th>Nama</th>
+                      <th>No Telp</th>
+                      <th>Nominal</th>
                       <th>Sumber</th>
+                      <th>Keterangan</th>
+                      <th>Tanggal</th>
                       <th>Edit</th>
                     </tr>
                   </thead>
-                  <tfoot>
-                    <tr>
-                      <th>ID Pemasukan</th>
-                      <th>Tanggal</th>
-                      <th>Jumlah</th>
-                      <th>Sumber</th>
-                      <th>Edit</th>
-                    </tr>
-                  </tfoot>
                   <tbody>
           <?php 
 $query = mysqli_query($koneksi,"SELECT * FROM pemasukan");
@@ -180,16 +189,20 @@ while ($data = mysqli_fetch_assoc($query))
 ?>
                     <tr>
                       <td><?=$data['id_pemasukan']?></td>
-                      <td><?= date('Y-m-d', strtotime($data['tgl_pemasukan'])) ?></td>
-                      <td>Rp. <?=number_format($data['jumlah'],2,',','.');?></td>
+                      <td><?=$data['nama']?></td>
+                      <td><?=$data['no_telp']?></td>
+                      <td><?=$data['nominal']?></td>
+                      <td><?=$data['sumber']?></td>
                       <td>
-                        <?php
-                        $sumber_id = $data['id_sumber'];
-                        $query_sumber = mysqli_query($koneksi, "SELECT nama FROM sumber WHERE id_sumber = '$sumber_id'");
-                        $sumber_nama = mysqli_fetch_assoc($query_sumber)['nama'];
-                        echo $sumber_nama;
-                        ?>
+                      <?php
+                      $id_keterangan = $data['id_keterangan']; // Menetapkan nilai $id_keterangan dari $data['id_keterangan']
+                      $query_sumber = mysqli_query($koneksi, "SELECT jenis FROM keterangan WHERE id_keterangan = '$id_keterangan'");
+                      $sumber_nama = mysqli_fetch_assoc($query_sumber)['jenis'];
+                      echo $sumber_nama;
+                      ?>
                       </td>
+                      <td><?= date('Y-m-d', strtotime($data['tanggal'])) ?></td>
+                      
                       <td>
                         <!-- Button untuk modal -->
 <a href="#" type="button" class=" fa fa-edit btn btn-primary btn-md" data-toggle="modal" data-target="#myModal<?php echo $data['id_pemasukan']; ?>"></a>
@@ -224,41 +237,63 @@ while ($row = mysqli_fetch_array($query_edit)) {
 </div>
 
 <div class="form-group">
-<label>Tanggal</label>
-<input type="date" name="tgl_pemasukan" class="form-control" value="<?php echo $row['tgl_pemasukan']; ?>" required>      
+<label>Nama</label>
+<input type="text" name="nama" class="form-control" value="<?php echo $row['nama']; ?>" required>      
 </div>
 
 <div class="form-group">
-<label>Jumlah</label>
-<input type="text" name="jumlah" class="form-control" value="<?php echo $row['jumlah']; ?>">      
+<label>No Telp</label>
+<input type="text" name="no_telp" class="form-control" value="<?php echo $row['no_telp']; ?>" required>      
+</div>
+
+<div class="form-group">
+<label>Nominal</label>
+<input type="text" name="nominal" class="form-control" value="<?php echo $row['nominal']; ?>" required>      
 </div>
 
 <div class="form-group">
 <label>Sumber</label>
+<input type="text" name="sumber" class="form-control" value="<?php echo $row['sumber']; ?>" required>      
+</div>
+
+<div class="form-group">
+<label>Keterangan</label>
+
 <?php
-if ($row['id_sumber'] == 1){
-  $querynama1 = mysqli_query($koneksi, "SELECT nama FROM sumber where id_sumber=1");
+if ($row['id_keterangan'] == 1){
+  $querynama1 = mysqli_query($koneksi, "SELECT jenis FROM keterangan where id_keterangan=1");
   $querynama1 = mysqli_fetch_array($querynama1);
-} else if ($row['id_sumber'] == 2){
-  $querynama2 = mysqli_query($koneksi, "SELECT nama FROM sumber where id_sumber=2");
+} else if ($row['id_keterangan'] == 2){
+  $querynama2 = mysqli_query($koneksi, "SELECT jenis FROM keterangan where id_keterangan=2");
   $querynama2 = mysqli_fetch_array($querynama2);
-} else if ($row['id_sumber'] == 3){
-  $querynama3 = mysqli_query($koneksi, "SELECT nama FROM sumber where id_sumber=3");
+} else if ($row['id_keterangan'] == 3){
+  $querynama3 = mysqli_query($koneksi, "SELECT jenis FROM keterangan where id_keterangan=3");
   $querynama3 = mysqli_fetch_array($querynama3);
 }
 ?>
 
-<select class="form-control" name='id_sumber'>
+<select class="form-control" name='id_keterangan'>
 <?php 
-$queri = mysqli_query($koneksi, "SELECT * FROM sumber");
+$queri = mysqli_query($koneksi, "SELECT * FROM keterangan");
   $no = 1;
   $noo = 1;
 while($querynama = mysqli_fetch_array($queri)){
 
-echo '<option value="'.$no++.'">'.$noo++.'.'.$querynama["nama"].'</option>';
+echo '<option value="'.$no++.'">'.$noo++.'.'.$querynama["jenis"].'</option>';
 }
 ?>
 </select>     
+
+
+<div class="form-group">
+<label>Tanggal</label>
+<input type="date" name="tanggal" class="form-control" value="<?php echo $row['tanggal']; ?>" required>      
+</div>
+
+
+
+
+
 </div>
 
 <div class="modal-footer">  

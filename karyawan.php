@@ -98,17 +98,7 @@ require 'cek-sesi.php';
                       <th>Edit</th>
                     </tr>
                   </thead>
-                  <tfoot>
-                    <tr>
-                      <th>Nama Pondok</th>
-                      <th>Santri Ikhwan</th>
-                      <th>Santri Akhwat</th>
-                      <th>Alamat</th>
-                      <th>Kontak</th>
-                      <th>Nama Penanggung Jawab</th>
-                      <th>Edit</th>
-                    </tr>
-                  </tfoot>
+                 
                   <tbody>
 				  <?php 
 $query = mysqli_query($koneksi,"SELECT * FROM karyawan");

@@ -41,7 +41,7 @@ require 'sidebar.php'; ?>
                    <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Daftar Karyawan</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Laporan Keuangan</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -51,11 +51,10 @@ require 'sidebar.php'; ?>
                       <th>Nama</th>
                       <th>Jumlah Transaksi </th>
                       <th>Jumlah Total Uang</th>
-					  <th>Download</th>
+					            <th>Download</th>
                     </tr>
                   </thead>
-                  <tfoot>
-                  </tfoot>
+                  
                   <tbody>
 				  <?php 
 $pemasukan=mysqli_query($koneksi,"SELECT * FROM pemasukan");

@@ -14,12 +14,15 @@ function write_log($log){
 }
 
 $id = (int) $_GET['id_pemasukan'];
-$tgl = abs((int) $_GET['tgl_pemasukan']);
-$jumlah = abs((int) $_GET['jumlah']);
-$sumber =abs((int) $_GET['id_sumber']);
+$nama = abs((int) $_GET['nama']);
+$no_telp = abs((int) $_GET['no_telp']);
+$nominal = abs((int) $_GET['nominal']);
+$sumber =abs((int) $_GET['sumber']);
+$id_keterangan =abs((int) $_GET['id_keterangan']);
+$tanggal = abs((int) $_GET['tanggal']);
 
 //query update
-$query = mysqli_query($koneksi,"UPDATE pemasukan SET tgl_pemasukan='$tgl' , jumlah='$jumlah', id_sumber='$sumber' WHERE id_pemasukan='$id' ");
+$query = mysqli_query($koneksi,"UPDATE pemasukan SET nama='$nama' , no_telp='$no_telp', nominal='$nominal', sumber='$sumber', id_keterangan='$id_keterangan', tanggal='$tanggal' WHERE id_pemasukan='$id' ");
 
 $namaadmin = $_SESSION['nama'];
 if ($query) {
