@@ -59,7 +59,7 @@ require 'sidebar.php'; ?>
 				  <?php 
 $pemasukan=mysqli_query($koneksi,"SELECT * FROM pemasukan");
 while ($masuk=mysqli_fetch_array($pemasukan)){
-$arraymasuk[] = $masuk['jumlah'];
+$arraymasuk[] = $masuk['nominal'];
 }
 $jumlahmasuk = array_sum($arraymasuk);
 
