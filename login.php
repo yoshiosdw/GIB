@@ -18,9 +18,20 @@
   <!-- Custom styles for this template-->
   <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
+  <style>
+    body {
+      background: url('img/1.png') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .card {
+      background-color: rgba(255, 255, 255, 0.5); /* Transparansi 50% */
+    }
+  </style>
+
 </head>
 
-<body style="background: linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%);">
+<!-- <body style="background: linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%);"> -->
 
   <div class="container">
 
